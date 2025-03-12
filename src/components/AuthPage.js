@@ -51,7 +51,6 @@ const AuthPage = () => {
 
       }
 
-      console.log("User Role:", user?.role?.toUpperCase());
 
       if (user?.role?.toUpperCase() === "DONOR") {
         console.log("Navigating to Donor Dashboard");

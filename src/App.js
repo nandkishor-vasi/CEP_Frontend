@@ -14,6 +14,7 @@ import DeviceDetails from './pages/DeviceDetails';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import DonorDashboard from './pages/DonorDashboard';
+import BeneficiaryDashboard from './pages/BeneficiaryDashboard';
 
 
 const sampleDevices = [
@@ -74,9 +75,9 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={["DONOR"]} />}>
             <Route path="/donorDashboard/:donorId" element={<DonorDashboard />} />
           </Route>
-          {/* <Route element={<ProtectedRoute allowedRoles={["BENEFICIARY"]} />}>
-            <Route path="/beneficiaryDashboard/:id" element={<BeneficiaryDashboard />} />
-          </Route> */}
+          <Route element={<ProtectedRoute allowedRoles={["BENEFICIARY"]} />}>
+            <Route path="/beneficiaryDashboard/:beneficiaryId" element={<BeneficiaryDashboard />} />
+          </Route>
         </Routes>
         <Footer />
       </Router>
