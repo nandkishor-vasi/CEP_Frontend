@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import "../styles/BeneficiaryDashboard.css";
+import BeneficiaryHistory from "./BeneficiaryHistory";
 
 const BeneficiaryDashboard = () => {
     const { beneficiaryId } = useParams();
     const [beneficiary, setBeneficiary] = useState(null);
+    const[availableDevices, setAvailableDevices] = useState([]);
+
     const userData = JSON.parse(localStorage.getItem("user"));  
-    const token = userData?.token || userData;
+    const token = userData? userData?.token : null;
     const backendBaseUrl = 'http://localhost:8080';
 
     console.log("Beneficiary ID:", beneficiaryId);
@@ -34,11 +38,44 @@ const BeneficiaryDashboard = () => {
         };
 
         fetchDonorDetails();
+
     }, [beneficiaryId, token]);
 
+    const fetchAvailableDevices = async () => {
+        console.log("Fetching available devices...");
+
+        try {
+            const response = await axios.get(`${backendBaseUrl}/api/devices/available`, {
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log("Available Devices:", response.data);
+            setAvailableDevices(response.data);
+            
+        } catch (error) {
+            console.error('Error fetching available devices:', error.response?.data || error.message);
+        }
+    }
+
+    const handleAcceptDevice = async (deviceId) => {
+        console.log("Accepting device...", deviceId);
+        try {
+            const response = await axios.put(`${backendBaseUrl}/api/devices/${deviceId}/beneficiaries/${beneficiaryId}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log("Device accepted:", response.data);
+            setTimeout(fetchAvailableDevices, 500);
+            
+        } catch (error) {
+            console.error('Error accepting device:', error.response?.data || error.message);
+        }
+    }
     return (
-        <div>
-            <h2>Beneficiary Dashboard:</h2>
+        <div className="beneficiary-dashboard">
+            <h2 className="h2-beneficiary-dashboard">Beneficiary Dashboard:</h2>
             {beneficiary ? (
                 <div>
                     <p>Username: {beneficiary?.user?.username || "NA"}</p>
@@ -47,6 +84,31 @@ const BeneficiaryDashboard = () => {
             ) : (
                 <p>Loading Beneficiary details...</p>
             )}
+            <h3>Available Devices:</h3>
+            <button onClick={fetchAvailableDevices}>Fetch Available Devices</button>
+            {availableDevices.length > 0 ? (
+                <ul className="device-list">
+                    {availableDevices.map(device => (
+                        <li key={device.id} className="device-item">
+                        <span><strong>{device.name}</strong> - {device.type} ({device.condition})</span>
+                            <span className={`device-status ${device.status === "Pending" ? "pending" : "accepted"}`}>
+                                {device.status}
+                            </span>
+                        {device.status === "Pending" && (
+                            <button
+                                className="btn-accept"
+                                onClick={() => handleAcceptDevice(device.id)}
+                            >
+                                Accept
+                            </button>
+                        )}
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No available devices.</p>
+            )}
+            <BeneficiaryHistory />
         </div>
     );
 };

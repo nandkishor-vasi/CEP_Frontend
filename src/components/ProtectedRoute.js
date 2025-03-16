@@ -2,12 +2,21 @@ import { useAuth}   from   "../context/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = ({allowedRoles}) => {
-    const {user} = useAuth();
-    console.log("User Role:", user?.role?.toUpperCase());
+    const { user, isLoggedIn } = useAuth();
+
+    console.log("User in ProtectedRoute:", user);
+    console.log("isLoggedIn:", isLoggedIn);
     console.log("Allowed Roles:", allowedRoles);
-    if(!user || !allowedRoles.includes(user.role?.toUpperCase())){
-        return  <Navigate to="/auth" replace />;
-    } 
+
+    
+    if (!isLoggedIn) {
+        return <Navigate to="/auth" replace />;
+    }
+
+    if (allowedRoles && !allowedRoles.includes(user?.role?.toUpperCase())) {
+        return <Navigate to="/" replace />;
+    }
+
     return <Outlet />;
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; // Import useAuth
 import logo from '../graphics/sample2.png';
-import './Navbar.css';
+import '../styles/Navbar.css';
 
 const Navbar = () => {
   const { isLoggedIn, logout } = useAuth(); // Use isLoggedIn and logout from AuthContext

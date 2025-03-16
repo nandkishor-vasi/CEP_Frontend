@@ -1,0 +1,74 @@
+.donor-dashboard {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.donor-dashboard h2 {
+    text-align: center;
+    color: #333;
+}
+
+.donor-details {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.donor-details p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.device-list {
+    list-style: none;
+    padding: 0;
+}
+
+.device-list li {
+    background: #ffffff;
+    margin: 8px 0;
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.device-status {
+    font-weight: bold;
+}
+
+.pending {
+    color: orange;
+}
+
+.accepted {
+    color: green;
+}
+
+.donate-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    background: #007bff;
+    color: white;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.donate-btn:hover {
+    background: #0056b3;
+}

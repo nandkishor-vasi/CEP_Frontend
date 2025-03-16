@@ -1,0 +1,76 @@
+.beneficiary-dashboard {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin: 10px 0;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.device-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.device-item {
+    background-color: white;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    color: #333;
+    text-align: left;
+}
+
+.device-item strong {
+    color: #007bff;
+}
+
+.device-item span {
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+
+.device-item .pending {
+    color: #ff9800;
+}
+
+.device-item .accepted {
+    color: #4caf50;
+}
+
+
+.accept-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.accept-btn:hover {
+    background-color: #218838;
+}

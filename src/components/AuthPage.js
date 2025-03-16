@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import './AuthPage.css';
+import '../styles/AuthPage.css';
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -37,30 +37,34 @@ const AuthPage = () => {
       });
 
       const user = response.data;
-
       console.log("API Response:", user);
+      console.log("User Token:", user.token);
 
-      login({
-        username: user.username,
-        email: user.email,
-        role: user.role
-      });
+      if (isLogin) {
+        if (user.token) {
+          localStorage.setItem("user", JSON.stringify({
+            id: user.id, 
+            name: user.name, 
+            role: user.role, 
+            token: user.token
+          }));
+          login({ username: user.username, email: user.email, role: user.role, token: user.token });
 
-      if (isLogin && user.token) {
-        localStorage.setItem("user", JSON.stringify({ id: user.id, name: user.name, role: user.role, token: user.token }));
+          if (user?.role?.toUpperCase() === "DONOR") {
+            console.log("Navigating to Donor Dashboard");
+            navigate(`/donorDashboard/${user.id}`);
+          } else if (user?.role?.toUpperCase() === "BENEFICIARY") {
+            navigate(`/beneficiaryDashboard/${user.id}`);
+          }
 
-      }
-
-
-      if (user?.role?.toUpperCase() === "DONOR") {
-        console.log("Navigating to Donor Dashboard");
-        navigate(`/donorDashboard/${user.id}`);
-      } else if (user?.role?.toUpperCase() === "BENEFICIARY") {
-        navigate(`/beneficiaryDashboard/${user.id}`);
+        } else {
+          console.error("Token missing in response.");
+          alert("Login failed. No token received.");
+        }
       } else {
-        navigate('/auth');
+        console.log("Signup successful. Redirecting to login...");
+        setIsLogin(true); 
       }
-
     } catch (error) {
       if (error.response) {
         console.error('Error Response Data:', error.response.data);
@@ -119,14 +123,14 @@ const AuthPage = () => {
       <p>
         {isLogin ? "Don't have an account? " : "Already have an account? "}
         <button onClick={() => {
-            setIsLogin(!isLogin);
-            if (!isLogin) {
-              setName("");
-              setEmail("");
-              setPhoneNumber("");
-              setAddress("");
-              setRole("DONOR");
-            }
+          setIsLogin(!isLogin);
+          if (!isLogin) {
+            setName("");
+            setEmail("");
+            setPhoneNumber("");
+            setAddress("");
+            setRole("DONOR");
+          }
         }}>
           {isLogin ? 'Sign Up' : 'Login'}
         </button>
