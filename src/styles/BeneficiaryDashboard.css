@@ -1,76 +1,90 @@
 .beneficiary-dashboard {
-    max-width: 600px;
-    margin: 20px auto;
+    display: flex;
+    justify-content: center;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    background-color: #f4f4f9;
 }
 
+.dashboard-container {
+    width: 60%;
+}
 
-button {
+.dashboard-title {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.beneficiary-info {
+    text-align: center;
+    padding: 15px;
+    font-size: 18px;
+}
+
+.request-list, .device-list {
+    list-style: none;
+    padding: 0;
+}
+
+.request-item, .device-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.request-desc {
+    font-weight: bold;
+}
+
+.request-status {
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+}
+
+.request-status.pending {
+    background-color: orange;
+}
+
+.request-status.accepted {
+    background-color: green;
+}
+
+.fetch-button {
     background-color: #007bff;
     color: white;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
-    font-size: 16px;
     cursor: pointer;
-    transition: 0.3s ease;
-    margin: 10px 0;
+    margin-top: 10px;
 }
 
-button:hover {
+.fetch-button:hover {
     background-color: #0056b3;
 }
 
-.device-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.device-item {
-    background-color: white;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-    color: #333;
-    text-align: left;
-}
-
-.device-item strong {
-    color: #007bff;
-}
-
-.device-item span {
-    font-weight: bold;
-    padding: 3px 8px;
-    border-radius: 5px;
-}
-
-.device-item .pending {
-    color: #ff9800;
-}
-
-.device-item .accepted {
-    color: #4caf50;
-}
-
-
-.accept-btn {
+.accept-button {
     background-color: #28a745;
     color: white;
     border: none;
-    padding: 5px 10px;
-    margin-left: 10px;
+    padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
-    transition: 0.3s ease;
 }
 
-.accept-btn:hover {
+.accept-button:hover {
     background-color: #218838;
 }

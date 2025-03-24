@@ -1,82 +1,94 @@
-import React, {useState} from "react";
-import {useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../styles/BeneficiaryHistory.css";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
+import {
+    Card, CardContent, Typography, List, ListItem, ListItemText, Divider, CircularProgress, Box
+} from "@mui/material";
+import { History } from "@mui/icons-material";
 
-const BeneficiaryHistory = () => {
-    const {beneficiaryId} = useParams();
+const BeneficiaryHistory = ({ updateTrigger }) => {
+    const { beneficiaryId } = useParams();
     const [history, setBeneficiaryHistory] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const token = userData?.token || userData;
-    const backendBaseUrl = 'http://localhost:8080';
-    const beneficiaryHistoryUrl = `${backendBaseUrl}/api/beneficiary/${beneficiaryId}/history`;
-
-    const fetchBeneficiaryHistory = async () => {
-        if (!beneficiaryId || !token) {
-            console.error("Missing beneficiaryId or token!");
-            return;
-        }
-
-        try {
-            console.log(`Fetching history from: ${backendBaseUrl}/api/beneficiary/${beneficiaryId}/history`);
-            const response = await axios.get(beneficiaryHistoryUrl, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            console.log("Beneficiary History:", response.data);
-            setBeneficiaryHistory(response.data);
-
-        } catch (error) {
-            console.error('Error fetching beneficiary history:', error.response?.data || error.message);
-        }
-    }
+    const userData = JSON.parse(localStorage.getItem("user")) || {};
+    const token = userData?.token;
+    const backendBaseUrl = "http://localhost:8080";
 
     useEffect(() => {
-        const interval = setInterval(fetchBeneficiaryHistory, 10000);  
+        const fetchBeneficiaryHistory = async () => {
+            if (!beneficiaryId || !token) {
+                setError("Missing beneficiary ID or authentication token.");
+                setLoading(false);
+                return;
+            }
 
-        return () => clearInterval(interval);
+            try {
+                const response = await axios.get(`${backendBaseUrl}/api/beneficiary/${beneficiaryId}/history`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setBeneficiaryHistory(response.data);
+            } catch (err) {
+                setError("Failed to load history. Please try again later.");
+                console.error("Error fetching beneficiary history:", err.response?.data || err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    }, [beneficiaryId, token]);
+        fetchBeneficiaryHistory();
+    }, [beneficiaryId, token, updateTrigger]);
 
     const formatAcceptedDate = (dateString) => {
         if (!dateString) return "Unknown";
         const parsedDate = new Date(dateString);
         if (isNaN(parsedDate.getTime())) return "Invalid Date";
-    
+
         return parsedDate.toLocaleString("en-IN", {
-            weekday: "short", 
-            day: "2-digit", 
-            month: "short", 
-            year: "numeric", 
-            hour: "2-digit", 
-            minute: "2-digit", 
-            second: "2-digit", 
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
             timeZone: "Asia/Kolkata"
-        }) + " IST";  
+        }) + " IST";
     };
 
-return(
-    <div className="beneficiary-history">
-        <h2>Accepted Devices History</h2>
-        {history.length > 0 ? (
-            <ul className="history-list">
-                {history.map((device) => (
-                    <li key={device.id} className="history-item">
-                        <span><strong>{device.name}</strong> - {device.type} ({device.condition})</span>
-                        <span className="accepted-date">
-                            Accepted on: {formatAcceptedDate(device.acceptedDate)}
-                        </span>
-                    </li>
-                ))}
-            </ul>
-        ) : (
-            <p>No devices accepted yet.</p>
-        )}
-    </div>
-);
+    return (
+        <Card sx={{ borderRadius: 2, boxShadow: 3, background: "rgba(255, 255, 255, 0.9)", mt: 3 }}>
+            <CardContent>
+                <Box display="flex" alignItems="center" gap={1} mb={2}>
+                    <History color="primary" />
+                    <Typography variant="h6" color="primary">📜 Accepted Devices History</Typography>
+                </Box>
+
+                {loading ? (
+                    <CircularProgress sx={{ display: "block", margin: "auto" }} />
+                ) : error ? (
+                    <Typography color="error">{error}</Typography>
+                ) : history.length > 0 ? (
+                    <List>
+                        {history.map((device, index) => (
+                            <React.Fragment key={device.id}>
+                                <ListItem sx={{ background: "#f5f5f5", borderRadius: 2, mb: 1 }}>
+                                    <ListItemText
+                                        primary={<Typography fontWeight="bold">{device.name} - {device.type} ({device.condition})</Typography>}
+                                        secondary={`Accepted on: ${formatAcceptedDate(device.acceptedDate)}`}
+                                    />
+                                </ListItem>
+                                {index !== history.length - 1 && <Divider />}
+                            </React.Fragment>
+                        ))}
+                    </List>
+                ) : (
+                    <Typography color="textSecondary">No devices accepted yet.</Typography>
+                )}
+            </CardContent>
+        </Card>
+    );
 };
 
 export default BeneficiaryHistory;

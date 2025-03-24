@@ -1,74 +1,58 @@
-.donor-dashboard {
-    max-width: 600px;
-    margin: 30px auto;
+body {
+    background: url('https://source.unsplash.com/1600x900/?technology,abstract') no-repeat center center fixed;
+    background-size: cover;
+    font-family: "Poppins", sans-serif;
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
     padding: 20px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.85); /* Slight transparency */
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    background-color: #f8f9fa;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-}
-
-.donor-dashboard h2 {
-    text-align: center;
-    color: #333;
-}
-
-.donor-details {
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
     margin-bottom: 20px;
 }
 
-.donor-details p {
-    font-size: 16px;
-    margin: 5px 0;
-}
-
-.device-list {
-    list-style: none;
-    padding: 0;
-}
-
-.device-list li {
-    background: #ffffff;
-    margin: 8px 0;
-    padding: 12px;
+.status-badge {
+    padding: 5px 10px;
     border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.device-status {
     font-weight: bold;
-}
-
-.pending {
-    color: orange;
+    display: inline-block;
+    text-align: center;
 }
 
 .accepted {
-    color: green;
-}
-
-.donate-btn {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-top: 15px;
-    background: #007bff;
+    background-color: #28a745;
     color: white;
-    text-align: center;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s ease;
 }
 
-.donate-btn:hover {
-    background: #0056b3;
+.pending {
+    background-color: #ff9800;
+    color: white;
+}
+
+.fetch-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.fetch-button:hover {
+    background-color: #0056b3;
 }

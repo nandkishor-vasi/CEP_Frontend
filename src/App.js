@@ -11,6 +11,8 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import DonorDashboard from './pages/DonorDashboard';
 import BeneficiaryDashboard from './pages/BeneficiaryDashboard';
+import DonorProfile from './pages/DonorProfile';
+import BeneficiaryProfile from './pages/BeneficiaryProfile'
 
 
 const sampleDevices = [
@@ -48,16 +50,7 @@ function App() {
     eWasteReduced: 0
   });
 
-  // Fetch devices from Java backend
-  // useEffect(() => {
-  //   axios.get("http://localhost:8080/api/devices")
-  //     .then(response => setDevices(response.data))
-  //     .catch(error => console.error("Error fetching devices:", error));
 
-  //   axios.get("http://localhost:8080/api/stats")
-  //     .then(response => setStats(response.data))
-  //     .catch(error => console.error("Error fetching stats:", error));
-  // }, []);
 
   return (
     <AuthProvider>  
@@ -74,6 +67,8 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={["BENEFICIARY"]} />}>
             <Route path="/beneficiaryDashboard/:beneficiaryId" element={<BeneficiaryDashboard />} />
           </Route>
+          <Route path="/donor/profile/:id" element={<DonorProfile />}></Route>
+          <Route path="/beneficiary/profile/:id" element={<BeneficiaryProfile />}></Route>
         </Routes>
         <Footer />
       </Router>

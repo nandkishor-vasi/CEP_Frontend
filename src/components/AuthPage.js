@@ -46,9 +46,11 @@ const AuthPage = () => {
             id: user.id, 
             name: user.name, 
             role: user.role, 
-            token: user.token
+            token: user.token,
+            username: user.username
           }));
-          login({ username: user.username, email: user.email, role: user.role, token: user.token });
+
+          login({id:user.id , username: user.username, email: user.email, role: user.role, token: user.token });
 
           if (user?.role?.toUpperCase() === "DONOR") {
             console.log("Navigating to Donor Dashboard");

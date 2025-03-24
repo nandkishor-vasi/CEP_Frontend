@@ -1,9 +1,12 @@
 import React,{useState} from "react";
 import axios from "axios";
 import "../styles/RequestForm.css";
+import { TextField } from "@mui/material";
+import { DeviceHub } from "@mui/icons-material";
 
 const RequestForm = ({beneficiaryId, onSuccess}) => {
     const [request, setRequest] = useState({
+        deviceName:"",
         description:"",
         createdAt: new Date().toISOString().split('T')[0],
     })
@@ -41,6 +44,7 @@ const RequestForm = ({beneficiaryId, onSuccess}) => {
             });
             setMessages("Request made successfully");
             setRequest({
+                deviceName:"",
                 description:"",
                 createdAt: new Date().toISOString().split('T')[0],
             });
@@ -60,7 +64,22 @@ const RequestForm = ({beneficiaryId, onSuccess}) => {
             <h2>Make a Request</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
+                {/* Device Name */}
+                    <TextField
+                        fullWidth
+                        label="Device Name"
+                        name="deviceName"
+                        value={request.deviceName}
+                        onChange={handleChange}
+                        variant="outlined"
+                        required
+                        sx={{ mb: 2 }}
+                        InputProps={{
+                            startAdornment: <DeviceHub color="primary" sx={{ mr: 1 }} />,
+                            }}
+                    />
                     <label>Description</label>
+                    
                     <textarea 
                         name="description" 
                         value={request.description} 
