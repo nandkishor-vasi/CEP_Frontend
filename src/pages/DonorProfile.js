@@ -53,7 +53,7 @@ const Profile = () => {
     const cloudinaryUploadPreset = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET; 
     try {
       const updatedData = { ...profile };
-
+      console.log("updating profile...0");
       if (selectedFile) {
         const formData = new FormData();
         formData.append("file", selectedFile);
@@ -75,7 +75,7 @@ const Profile = () => {
           alert("Image uploaded to db successfully!");
           setEditing(false);
           setSelectedFile(null);
-          return;
+          
         }
         catch (error) {
           console.error("Error uploading image:", error);
@@ -83,6 +83,7 @@ const Profile = () => {
         }
       }
 
+      console.log("updating profile...");
       await axios.put(`${backendBaseUrl}/api/donors/${donorId}/profile`, updatedData, {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       });

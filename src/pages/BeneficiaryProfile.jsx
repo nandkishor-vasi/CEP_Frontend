@@ -55,8 +55,10 @@ const BeneficiaryProfile = () => {
 
         try {
             const updatedData = { ...profile };
-
+            console.log("updating profile...0");
+            
             if(selectedFile) {
+              console.log("updating profile...1");
                 const formData = new FormData();
                 formData.append("file", selectedFile);
                 formData.append("upload_preset", cloudinaryUploadPreset);
@@ -78,21 +80,21 @@ const BeneficiaryProfile = () => {
                     alert("Profile Image Updated Successfully!");
                     setEditing(false);
                     setSelectedFile(null);
-                    return;
                } catch (error) {
                     console.error("Error uploading image:", error);
                     alert("Upload failed!");
-               }
+                  }
+                }
+               console.log("updating profile...");
 
                await axios.put(`${backendBaseUrl}/api/beneficiary/${beneficiaryId}/profile`, updatedData, {
-                   headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                    headers: {"Content-Type": "application/json", Authorization: `Bearer ${token}` },
                });
 
                setProfile(updatedData);
                setEditing(false);
                alert("Profile updated successfully!");
 
-            }
         } catch (error) {
             console.error("Error updating profile:", error);
             alert("Failed to update profile.");   
@@ -142,9 +144,9 @@ const BeneficiaryProfile = () => {
             <label>Beneficiary Status:</label>
             <select name="status" value={profile.status} onChange={handleChange} disabled={!editing}>
               <option value="">Select Beneficiary Status</option>
-              <option value="INDIVIDUAL">ACTIVE</option>
-              <option value="ORGANIZATION">INACTIVE</option>
-              <option value="ORGANIZATION">SUSPENDED</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+              <option value="SUSPENDED">SUSPENDED</option>
             </select>
     
             <label>Description:</label>

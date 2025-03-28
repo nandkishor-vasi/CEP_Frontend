@@ -27,6 +27,12 @@ const Navbar = () => {
         <Link to="/contact" className="nav-link">Contact</Link>
 
         {isLoggedIn && id && (
+          <Link to="/leaderboard" className="nav-link">
+            Leaderboard
+          </Link>
+        )}  
+
+        {isLoggedIn && id && (
           <Link 
             to={userRole === "donor" ? `/donorDashboard/${id}` : `/beneficiaryDashboard/${id}`} 
             className="nav-link"

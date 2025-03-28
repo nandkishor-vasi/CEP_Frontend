@@ -1,143 +1,302 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
-import '../styles/AuthPage.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Card,
+  CardContent,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import { motion } from "framer-motion";
+import { styled } from "@mui/system";
+
+const Background = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: "100vh",
+  width: "100%",
+  background: "linear-gradient(135deg, #667eea, #764ba2)",
+  paddingTop: "40px", 
+  paddingBottom: "20px",
+  overflowY: "auto",
+});
+
+
+const GlassCard = styled(Card)({
+  backdropFilter: "blur(20px)",
+  backgroundColor: "rgba(255, 255, 255, 0.2)",
+  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+  borderRadius: "15px",
+  paddingTop: "20px",
+  padding: "25px",
+  width: "550px", 
+  maxWidth: "90%", 
+  color: "white",
+  textAlign: "center",
+});
+
+
+const StyledButton = styled(Button)({
+  background: "linear-gradient(90deg,rgb(255, 112, 117), #fad0c4)",
+  color: "white",
+  fontWeight: "bold",
+  textTransform: "none",
+  width: "100%",
+  padding: "10px",
+  marginTop: "10px",
+  "&:hover": {
+    background: "linear-gradient(90deg, #fad0c4, #ff9a9e)",
+  },
+});
+
+const Footer = styled("div")({
+  width: "100%",
+  textAlign: "center",
+  color: "white",
+  fontSize: "14px",
+  marginTop: "auto",
+  padding: "8px 0",
+  marginLeft: "-58px",
+});
+
+
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [address, setAddress] = useState('');
-  const [role, setRole] = useState('DONOR');
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    name: "",
+    email: "",
+    phoneNumber: "",
+    address: "",
+    role: "DONOR",
+  });
+
   const navigate = useNavigate();
   const { login } = useAuth();
-  const backendBaseUrl = 'http://localhost:8080';
+  const backendBaseUrl = "http://localhost:8080";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const url = isLogin 
-      ? `${backendBaseUrl}/api/auth/login` 
+    const url = isLogin
+      ? `${backendBaseUrl}/api/auth/login`
       : `${backendBaseUrl}/api/auth/signup`;
 
-    const body = isLogin 
-      ? { username, password } 
-      : { name, email, phoneNumber, address, role, username, password };
-
-    console.log("Request URL:", url);
-    console.log("Request Body:", body);
+    const body = isLogin
+      ? { username: formData.username, password: formData.password }
+      : { ...formData };
 
     try {
       const response = await axios.post(url, body, {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       });
 
       const user = response.data;
-      console.log("API Response:", user);
-      console.log("User Token:", user.token);
-
       if (isLogin) {
         if (user.token) {
-          localStorage.setItem("user", JSON.stringify({
-            id: user.id, 
-            name: user.name, 
-            role: user.role, 
-            token: user.token,
-            username: user.username
-          }));
-
-          login({id:user.id , username: user.username, email: user.email, role: user.role, token: user.token });
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              id: user.id,
+              name: user.name,
+              role: user.role,
+              token: user.token,
+              username: user.username,
+            })
+          );
+          login(user);
 
           if (user?.role?.toUpperCase() === "DONOR") {
-            console.log("Navigating to Donor Dashboard");
             navigate(`/donorDashboard/${user.id}`);
           } else if (user?.role?.toUpperCase() === "BENEFICIARY") {
             navigate(`/beneficiaryDashboard/${user.id}`);
           }
-
         } else {
-          console.error("Token missing in response.");
           alert("Login failed. No token received.");
         }
       } else {
-        console.log("Signup successful. Redirecting to login...");
-        setIsLogin(true); 
+        setIsLogin(true);
       }
     } catch (error) {
-      if (error.response) {
-        console.error('Error Response Data:', error.response.data);
-        alert(`Error: ${error.response.data.message || "Authentication failed"}`);
-      } else if (error.request) {
-        console.error('No Response Received:', error.request);
-        alert("No response from server. Check if the backend is running.");
-      } else {
-        console.error('Request Error:', error.message);
-        alert("An unexpected error occurred. Please try again.");
-      }
+      alert(error.response?.data?.message || "Authentication failed.");
     }
   };
 
   return (
-    <div className="auth-page">
-      <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
-      <form onSubmit={handleSubmit}>
-        {!isLogin && (
-          <>
-            <label>
-              Name:
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-            </label>
-            <label>
-              Email:
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            </label>
-            <label>
-              Phone Number:
-              <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required />
-            </label>
-            <label>
-              Address:
-              <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
-            </label>
-            <label>
-              Role:
-              <select value={role} onChange={(e) => setRole(e.target.value)} required>
-                <option value="DONOR">Donor</option>
-                <option value="BENEFICIARY">Beneficiary</option>
-              </select>
-            </label>
-          </>
-        )}
-        <label>
-          Username:
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-        </label>
-        <label>
-          Password:
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </label>
-        <button type="submit">{isLogin ? 'Login' : 'Sign Up'}</button>
-      </form>
-      <p>
-        {isLogin ? "Don't have an account? " : "Already have an account? "}
-        <button onClick={() => {
-          setIsLogin(!isLogin);
-          if (!isLogin) {
-            setName("");
-            setEmail("");
-            setPhoneNumber("");
-            setAddress("");
-            setRole("DONOR");
-          }
-        }}>
-          {isLogin ? 'Sign Up' : 'Login'}
-        </button>
-      </p>
-    </div>
+    <Background>
+      <motion.div
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <GlassCard>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>
+              {isLogin ? "Login" : "Sign Up"}
+            </Typography>
+
+            <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
+              {!isLogin && (
+                <>
+                  <TextField
+                    fullWidth
+                    label="Name"
+                    margin="normal"
+                    variant="outlined"
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    required
+                    sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "&.Mui-focused fieldset": { borderColor:"rgb(166, 166, 166)"  }, // Change border color to off-white
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "#f5f5f5", 
+                          },
+                        }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    margin="normal"
+                    variant="outlined"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    required
+                    sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "&.Mui-focused fieldset": { borderColor:"rgb(166, 166, 166)"  }, // Change border color to off-white
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "#f5f5f5", 
+                          },
+                        }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Phone Number"
+                    margin="normal"
+                    variant="outlined"
+                    type="tel"
+                    value={formData.phoneNumber}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phoneNumber: e.target.value })
+                    }
+                    required
+                    sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "&.Mui-focused fieldset": { borderColor:"rgb(166, 166, 166)"  }, // Change border color to off-white
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "#f5f5f5", 
+                          },
+                        }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Address"
+                    margin="normal"
+                    variant="outlined"
+                    value={formData.address}
+                    onChange={(e) =>
+                      setFormData({ ...formData, address: e.target.value })
+                    }
+                    required
+                    sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "&.Mui-focused fieldset": { borderColor:"rgb(166, 166, 166)"  }, // Change border color to off-white
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "#f5f5f5", 
+                          },
+                        }}
+                  />
+                  <Select
+                    fullWidth
+                    value={formData.role}
+                    onChange={(e) =>
+                      setFormData({ ...formData, role: e.target.value })
+                    }
+                    margin="normal"
+                    variant="outlined"
+                  >
+                    <MenuItem value="DONOR">Donor</MenuItem>
+                    <MenuItem value="BENEFICIARY">Beneficiary</MenuItem>
+                  </Select>
+                </>
+              )}
+
+              <TextField
+                fullWidth
+                label="Username"
+                margin="normal"
+                variant="outlined"
+                value={formData.username}
+                onChange={(e) =>
+                  setFormData({ ...formData, username: e.target.value })
+                }
+                required
+                sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "&.Mui-focused fieldset": { borderColor:"rgb(166, 166, 166)"  }, // Change border color to off-white
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "#f5f5f5", 
+                          },
+                        }}
+              />
+              <TextField
+                fullWidth
+                label="Password"
+                type="password"
+                margin="normal"
+                variant="outlined"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                required
+                sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "&.Mui-focused fieldset": { borderColor:"rgb(166, 166, 166)"  }, // Change border color to off-white
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "#f5f5f5", 
+                          },
+                        }}
+              />
+
+              <StyledButton type="submit">
+                {isLogin ? "Login" : "Sign Up"}
+              </StyledButton>
+            </form>
+
+            <Typography
+              sx={{ mt: 2, cursor: "pointer", color: "#ffdfdf" }}
+              onClick={() => setIsLogin(!isLogin)}
+            >
+              {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login"}
+            </Typography>
+          </CardContent>
+        </GlassCard>
+      </motion.div>
+
+      {/* Copyright Notice */}
+      <Footer>© {new Date().getFullYear()} Reusable Tech Inventory. All Rights Reserved.</Footer>
+    </Background>
   );
 };
 

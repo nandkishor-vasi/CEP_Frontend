@@ -6,7 +6,7 @@ import forest from "../graphics/forest.png";
 import rocks from "../graphics/rocks.png";
 import water from "../graphics/water.png";
 
-const ParallaxHero = () => {
+const ParallaxHero = ({text, subText}) => {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -20,11 +20,13 @@ const ParallaxHero = () => {
 
   return (
     <div className="parallax-hero">
-      <h2 id="text" style={{ top: `calc(50% + ${scrollY * -0.5}px)` }}>
-        <span>Empower Change</span>
-        <br />
-        Support a Cause
-      </h2>
+        <h2 id="text" style={{ top: `calc(50% + ${scrollY * -0.5}px)` }}>
+          <span>{text}</span>
+          <br />
+          {subText}
+        </h2>
+      
+
       <img
         src={bird1}
         className="parallax-item"

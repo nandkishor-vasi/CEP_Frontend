@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import Contact from './pages/Contact';
 import About from './pages/About';
 import Home from './pages/Home';
@@ -12,8 +11,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 import DonorDashboard from './pages/DonorDashboard';
 import BeneficiaryDashboard from './pages/BeneficiaryDashboard';
 import DonorProfile from './pages/DonorProfile';
-import BeneficiaryProfile from './pages/BeneficiaryProfile'
-
+import BeneficiaryProfile from './pages/BeneficiaryProfile';
+import DonorLeaderboard from './pages/DonorLeaderboard';
+import DonorDonations from './pages/DonorDonations';
+import Requests from './pages/Requests';
 
 const sampleDevices = [
   {
@@ -69,8 +70,10 @@ function App() {
           </Route>
           <Route path="/donor/profile/:id" element={<DonorProfile />}></Route>
           <Route path="/beneficiary/profile/:id" element={<BeneficiaryProfile />}></Route>
+          <Route path="/leaderboard" element={<DonorLeaderboard />} />
+          <Route path="/devices/donors/:donorId" element={< DonorDonations />} />
+          <Route path="/requests/donors/:donorId" element={< Requests />} />
         </Routes>
-        <Footer />
       </Router>
     </AuthProvider>
   );

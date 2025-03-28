@@ -10,6 +10,7 @@ import { Person, CheckCircle, PendingActions, Inventory } from "@mui/icons-mater
 import RequestForm from "./RequestForm";
 import BeneficiaryHistory from "./BeneficiaryHistory";
 import ParallaxHero from "../components/ParallaxHero";
+import ParallaxPage from "../components/ParallaxPage";
 
 const BeneficiaryDashboard = () => {
     const { beneficiaryId } = useParams();
@@ -85,7 +86,7 @@ const BeneficiaryDashboard = () => {
                 color: "#fff"
             }}
         > 
-            <ParallaxHero/>
+            <ParallaxHero text="Empowering lives," subText="one step at a time" />
             <Container maxWidth="lg" sx={{ mt: 4, position: "relative", zIndex: 1 }}>
                 <Typography variant="h4" align="center" fontWeight="bold" gutterBottom sx={{ color: "#007bff", textShadow: "2px 0px 2px rgba(255, 255, 255, 0.84)" }}>
                     🎁 Beneficiary Dashboard
