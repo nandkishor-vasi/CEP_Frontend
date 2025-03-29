@@ -16,6 +16,7 @@ import {
     Alert
 } from "@mui/material";
 import { DeviceHub, Event } from "@mui/icons-material";
+import { useAuth } from "../context/AuthContext";
 
 const DonateDeviceForm = ({ donorId, onSuccess }) => {
     const [device, setDevice] = useState({
@@ -32,11 +33,10 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [deviceImageUrl, setDeviceImageUrl] = useState("");
 
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const token = userData?.token || userData;
+    const { user } = useAuth();
+    const token = user?.token;
     const backendUrl = "http://localhost:8080";
 
-    // Cloudinary config from .env file
     const cloudinaryCloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
     const cloudinaryUploadPreset = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET;
 
@@ -70,7 +70,6 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
         try {
             let imageUrl = ""; 
 
-            // Upload to Cloudinary if an image is selected
             if (selectedFile) {
                 console.log("Uploading photo to Cloudinary...");
                 const formData = new FormData();
@@ -87,7 +86,6 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
                 console.log("Uploaded Image URL:", imageUrl);
             }
 
-            // Send data to backend
             console.log("Submitting to backend...");
             const res = await axios.post(
                 `${backendUrl}/api/devices/donors/${donorId}`,
@@ -97,7 +95,6 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
 
             console.log("Backend Response:", res.data);
 
-            // Success message
             setMessage("✅ Device donated successfully!");
             setSelectedFile(null);
             setOpenSnackbar(true);
@@ -133,7 +130,6 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
 
                     <form onSubmit={handleSubmit}>
 
-                        {/* Device Name */}
                         <TextField
                             fullWidth
                             label="Device Name"
@@ -148,7 +144,6 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
                             }}
                         />
 
-                        {/* Device Type */}
                         <FormControl fullWidth sx={{ mb: 2 }}>
                             <InputLabel>Device Type</InputLabel>
                             <Select
@@ -165,7 +160,6 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
                             </Select>
                         </FormControl>
 
-                        {/* Condition */}
                         <FormControl fullWidth sx={{ mb: 2 }}>
                             <InputLabel>Condition</InputLabel>
                             <Select
@@ -182,7 +176,6 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
                             </Select>
                         </FormControl>
 
-                        {/* Donation Date */}
                         <TextField
                             fullWidth
                             type="date"

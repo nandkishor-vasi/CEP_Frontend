@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { 
     Container, Card, CardContent, Typography, Button, List, ListItem, ListItemText, 
     Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, 
-    TableRow, Paper, Grid, Box
+    TableRow, Paper, Grid, Box, CardActionArea, Divider
 } from "@mui/material";
 import { Person, CheckCircle, PendingActions, Inventory } from "@mui/icons-material";
 import RequestForm from "./RequestForm";
 import BeneficiaryHistory from "./BeneficiaryHistory";
 import ParallaxHero from "../components/ParallaxHero";
 import ParallaxPage from "../components/ParallaxPage";
+import { History } from "@mui/icons-material";
 
 const BeneficiaryDashboard = () => {
     const { beneficiaryId } = useParams();
+    const navigate = useNavigate();
+    const [history, setBeneficiaryHistory] = useState([]);
     const [beneficiary, setBeneficiary] = useState(null);
     const [availableDevices, setAvailableDevices] = useState([]);
     const [requests, setRequests] = useState([]);
@@ -49,7 +52,26 @@ const BeneficiaryDashboard = () => {
 
         fetchBeneficiaryDetails();
         fetchAvailableDevices();
+        fetchBeneficiaryHistory();
     }, [beneficiaryId, token]);
+
+    const fetchBeneficiaryHistory = async () => {
+                if (!beneficiaryId || !token) {
+                    setLoading(false);
+                    return;
+                }
+    
+                try {
+                    const response = await axios.get(`${backendBaseUrl}/api/beneficiary/${beneficiaryId}/history`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setBeneficiaryHistory(response.data);
+                } catch (err) {
+                    console.error("Error fetching beneficiary history:", err.response?.data || err.message);
+                } finally {
+                    setLoading(false);
+                }
+    };
 
     const fetchAvailableDevices = async () => {
         try {
@@ -102,16 +124,15 @@ const BeneficiaryDashboard = () => {
                         </Card>
                     </Grid>
 
-                    {/* Requests Section */}
                     <Grid item xs={12} md={6}>
                         <Card sx={{ borderRadius: 2, boxShadow: 3, height: "100%", background: "rgba(255, 255, 255, 0.9)" }}>
-                            <CardContent>
+                            <CardActionArea onClick={() => navigate(`/requests/beneficiary/${beneficiaryId}`)}>
                                 <Typography variant="h6" gutterBottom sx={{ color: "#3f51b5" }}>📩 Your Requests</Typography>
                                 {requests.length > 0 ? (
                                     <List>
                                         {requests.map((request) => (
                                             <ListItem key={request.id} sx={{ display: "flex", justifyContent: "space-between", background: "#fff", borderRadius: 2, mb: 1 }}>
-                                                <ListItemText primary={request.description} />
+                                                <ListItemText primary={request.deviceName} />
                                                 <Chip
                                                     icon={request.status === "Pending" ? <PendingActions /> : <CheckCircle />}
                                                     label={request.status}
@@ -123,11 +144,10 @@ const BeneficiaryDashboard = () => {
                                 ) : (
                                     <Typography color="textSecondary">No requests found.</Typography>
                                 )}
-                            </CardContent>
+                            </CardActionArea>
                         </Card>
                     </Grid>
 
-                    {/* Available Devices */}
                     <Grid item xs={12} md={6}>
                         <Card sx={{ borderRadius: 2, boxShadow: 3, height: "100%", background: "rgba(255, 255, 255, 0.9)" }}>
                             <CardContent>
@@ -171,12 +191,30 @@ const BeneficiaryDashboard = () => {
                         </Card>
                     </Grid>
                     
-                    {/* Beneficiary History */}
-                    <Grid item xs={12}>
-                        <BeneficiaryHistory updateTrigger={updateHistory} />
+                    <Grid item xs={12} md={6}>
+                        <Card sx={{ borderRadius: 2, boxShadow: 3, height: "100%", background: "rgba(255, 255, 255, 0.9)" }}>
+                            <CardActionArea onClick={() => navigate(`/beneficiaryHistory/${beneficiaryId}`)} sx={{ p: 2 }}>
+                                <Typography variant="h6" gutterBottom sx={{ color: "#3f51b5", display: "flex", alignItems: "center", gap: 1 }}>
+                                    <History color="primary" /> 📜 Accepted Devices History
+                                </Typography>
+                                {history.length > 0 ? (
+                                    <List>
+                                        {history.slice(0, 3).map((device, index) => ( 
+                                            <React.Fragment key={device.id}>
+                                                <ListItem sx={{ display: "flex", justifyContent: "space-between", background: "#fff", borderRadius: 2, mb: 1 }}>
+                                                    <ListItemText primary={device.name} secondary={`Type: ${device.type} | Condition: ${device.condition}`} />
+                                                </ListItem>
+                                                {index !== history.length - 1 && <Divider />}
+                                            </React.Fragment>
+                                        ))}
+                                    </List>
+                                ) : (
+                                    <Typography color="textSecondary">No devices accepted yet.</Typography>
+                                )}
+                            </CardActionArea>
+                        </Card>
                     </Grid>
                     
-                    {/* Request Form */}
                     <Grid item xs={12}>
                         <RequestForm beneficiaryId={beneficiaryId} />
                     </Grid>

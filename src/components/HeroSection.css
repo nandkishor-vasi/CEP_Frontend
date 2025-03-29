@@ -1,4 +1,9 @@
 .hero.is-primary {
-    background-color: #4169C4;
-    color: #fff;
+    background-color: transparent; /* Removes white/blue background */
+}
+.hero-body {
+    padding: 0; /* Removes extra spacing */
+}
+.container {
+    background: none;
 }

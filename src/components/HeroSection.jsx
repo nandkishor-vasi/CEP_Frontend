@@ -1,5 +1,4 @@
 import "./HeroSection.css"
-// components/HeroSection.js
 const HeroSection = () => (
   <section className="hero is-primary">
     <div className="hero-body">

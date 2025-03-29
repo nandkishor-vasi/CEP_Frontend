@@ -15,6 +15,8 @@ import BeneficiaryProfile from './pages/BeneficiaryProfile';
 import DonorLeaderboard from './pages/DonorLeaderboard';
 import DonorDonations from './pages/DonorDonations';
 import Requests from './pages/Requests';
+import BeneficiaryRequest from "./pages/BeneficiaryRequest"
+import BeneficiartHistory from "./pages/BeneficiaryHistory"
 
 const sampleDevices = [
   {
@@ -68,11 +70,13 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={["BENEFICIARY"]} />}>
             <Route path="/beneficiaryDashboard/:beneficiaryId" element={<BeneficiaryDashboard />} />
           </Route>
+          <Route path="/beneficiaryHistory/:beneficiaryId" element={< BeneficiartHistory />}></Route>
           <Route path="/donor/profile/:id" element={<DonorProfile />}></Route>
           <Route path="/beneficiary/profile/:id" element={<BeneficiaryProfile />}></Route>
           <Route path="/leaderboard" element={<DonorLeaderboard />} />
           <Route path="/devices/donors/:donorId" element={< DonorDonations />} />
           <Route path="/requests/donors/:donorId" element={< Requests />} />
+          <Route path="/requests/beneficiary/:beneficiaryId" element={< BeneficiaryRequest />} />
         </Routes>
       </Router>
     </AuthProvider>
