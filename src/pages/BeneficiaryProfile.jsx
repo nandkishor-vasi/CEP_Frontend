@@ -15,10 +15,10 @@ const BeneficiaryProfile = () => {
         city: "",
         state: "",
         country: "",
-        status: "",
         donationsReceived: 0,
+        beneficiaryType: "", 
+        status: "",
         needDescription: "",
-        beneficiaryType: "" 
     });
 
     const [editing, setEditing] = useState(false);
@@ -85,18 +85,20 @@ const BeneficiaryProfile = () => {
                     alert("Upload failed!");
                   }
                 }
-               console.log("updating profile...");
-
-               await axios.put(`${backendBaseUrl}/api/beneficiary/${beneficiaryId}/profile`, updatedData, {
-                    headers: {"Content-Type": "application/json", Authorization: `Bearer ${token}` },
-               });
+                const { user, ...profileData } = profile;
+                console.log("Sending updated profile data:", profileData);
+                const response = await axios.put(`${backendBaseUrl}/api/beneficiary/${beneficiaryId}/profile`, profileData, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                console.log("Profile update response:", response);
+                
 
                setProfile(updatedData);
                setEditing(false);
                alert("Profile updated successfully!");
 
         } catch (error) {
-            console.error("Error updating profile:", error);
+            console.log("Error updating profile:", error)
             alert("Failed to update profile.");   
         }
     };
@@ -107,7 +109,7 @@ const BeneficiaryProfile = () => {
     
           <div className="profile-image-section">
             <img
-              src={profile.profileImageUrl || "https://via.placeholder.com/150"}
+              src={profile.profileImageUrl || "https://cdn-icons-png.flaticon.com/512/8847/8847419.png"}
               alt="Profile"
               className="profile-image"
             />
@@ -120,7 +122,6 @@ const BeneficiaryProfile = () => {
             )}
           </div>
     
-          {/* Profile Form */}
           <div className="profile-form">
             <label>City:</label>
             <input type="text" name="city" value={profile.city} onChange={handleChange} disabled={!editing} />
@@ -132,7 +133,7 @@ const BeneficiaryProfile = () => {
             <input type="text" name="country" value={profile.country} onChange={handleChange} disabled={!editing} />
     
             <label>Donations Received:</label>
-            <input type="number" name="donationsReceived" value={profile.donationsReceived} onChange={handleChange} disabled={!editing} />
+            <input type="number" name="donationsReceived" value={profile.donationsReceived}  />
     
             <label>Beneficiary Type:</label>
             <select name="beneficiaryType" value={profile.beneficiaryType} onChange={handleChange} disabled={!editing}>

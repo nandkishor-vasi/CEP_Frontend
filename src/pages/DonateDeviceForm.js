@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import GoogleDrivePicker from "../components/GoogleDrivePicker";
 import {
     TextField,
     Select,
@@ -19,6 +20,7 @@ import { DeviceHub, Event } from "@mui/icons-material";
 import { useAuth } from "../context/AuthContext";
 
 const DonateDeviceForm = ({ donorId, onSuccess }) => {
+    const [selectedSource, setSelectedSource] = useState(null);
     const [device, setDevice] = useState({
         name: "",
         type: "",
@@ -51,14 +53,37 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
         const file = e.target.files[0];
         if (file) {
             setSelectedFile(file);
+            setSelectedSource("file");
             setDeviceImageUrl(URL.createObjectURL(file));
         }
     };
+    
+    const handleGoogleDriveUpload = (files) => {
+        if (files && files.length > 0) {
+            console.log("Selected File from Google Drive:", files[0]); // Debugging
+    
+            const fileIdMatch = files[0].url.match(/\/d\/(.*?)\//);
+            if (fileIdMatch) {
+                const fileId = fileIdMatch[1];
+                const directLink = `https://drive.google.com/uc?export=view&id=${fileId}`;
+    
+                console.log("Extracted File ID:", fileId);
+                console.log("Direct Image URL:", directLink);
+    
+                setSelectedSource("google-drive");
+                setSelectedFile(null);
+                setDeviceImageUrl(directLink);
+            } else {
+                console.error("❌ Invalid Google Drive URL format:", files[0].url);
+            }
+        }
+    };    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setMessage("");
+        console.log("Uploading image from:", selectedSource);
 
         if (!donorId || !token) {
             setMessage("❌ Missing donor ID or token");
@@ -68,7 +93,7 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
         }
 
         try {
-            let imageUrl = ""; 
+            let imageUrl = deviceImageUrl; 
 
             if (selectedFile) {
                 console.log("Uploading photo to Cloudinary...");
@@ -188,22 +213,27 @@ const DonateDeviceForm = ({ donorId, onSuccess }) => {
                                 startAdornment: <Event color="primary" sx={{ mr: 1 }} />,
                             }}
                         />
+                        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                            
+                            <label htmlFor="image-upload">
+                                <input type="file" id="image-upload" onChange={handleFileChange} style={{ display: "none" }} />
+                                <Button component="span" variant="outlined" fullWidth sx={{ mb: 2 }}>
+                                    Upload Device Image 📷
+                                </Button>
+                            </label>
+                            
+                            {/* <GoogleDrivePicker onSelect={handleGoogleDriveUpload} disabled={selectedSource === "file"}/> */}
 
-                        {/* Image Upload */}
-                        <label htmlFor="image-upload">
-                            <input type="file" id="image-upload" onChange={handleFileChange} style={{ display: "none" }} />
-                            <Button component="span" variant="outlined" fullWidth sx={{ mb: 2 }}>
-                                Upload Device Image 📷
-                            </Button>
-                        </label>
+                        </div>
 
                         {deviceImageUrl && (
                             <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                                {console.log("Rendering Image Preview:", deviceImageUrl)}
                                 <img src={deviceImageUrl} alt="Device Preview" width="100%" />
                             </Box>
                         )}
 
-                        {/* Donate Button with Loading Indicator */}
+
                         <Button
                             fullWidth
                             variant="contained"

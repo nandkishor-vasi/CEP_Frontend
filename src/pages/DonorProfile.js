@@ -101,10 +101,9 @@ const Profile = () => {
     <div className="profile-container">
       <h2 className="profile-header">Donor Profile</h2>
 
-      {/* Profile Image & Upload */}
       <div className="profile-image-section">
         <img
-          src={profile.profileImageUrl || "https://via.placeholder.com/150"}
+          src={profile.profileImageUrl || "https://cdn-icons-png.flaticon.com/512/8847/8847419.png"}
           alt="Profile"
           className="profile-image"
         />
@@ -129,7 +128,7 @@ const Profile = () => {
         <input type="text" name="country" value={profile.country} onChange={handleChange} disabled={!editing} />
 
         <label>Donation Count:</label>
-        <input type="number" name="donationCount" value={profile.donationCount} onChange={handleChange} disabled={!editing} />
+        <input type="number" name="donationCount" value={profile.donationCount}  />
 
         <label>Donor Type:</label>
         <select name="donorType" value={profile.donorType} onChange={handleChange} disabled={!editing}>

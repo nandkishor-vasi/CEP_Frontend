@@ -22,6 +22,7 @@ const BeneficiaryDashboard = () => {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [updateHistory, setUpdateHistory] = useState(false); 
+    const [updateRequests, setUpdateRequests] = useState(false);
 
     const userData = JSON.parse(localStorage.getItem("user")) || {};
     const token = userData?.token;
@@ -53,7 +54,11 @@ const BeneficiaryDashboard = () => {
         fetchBeneficiaryDetails();
         fetchAvailableDevices();
         fetchBeneficiaryHistory();
-    }, [beneficiaryId, token]);
+    }, [beneficiaryId, token, updateRequests]);
+
+    const handleRequestSuccess = () => {
+        setUpdateRequests((prev) => !prev); 
+    };
 
     const fetchBeneficiaryHistory = async () => {
                 if (!beneficiaryId || !token) {
@@ -62,6 +67,7 @@ const BeneficiaryDashboard = () => {
                 }
     
                 try {
+                    console.log("In Beneficiary History") 
                     const response = await axios.get(`${backendBaseUrl}/api/beneficiary/${beneficiaryId}/history`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
@@ -125,7 +131,7 @@ const BeneficiaryDashboard = () => {
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <Card sx={{ borderRadius: 2, boxShadow: 3, height: "100%", background: "rgba(255, 255, 255, 0.9)" }}>
+                        <Card sx={{ borderRadius: 2, boxShadow: 3, height: "100%", background: "rgba(255, 255, 255, 0.9)", paddingLeft:"19px", paddingRight: "22px", paddingTop:"11px", paddingBottom: "7px"}}>
                             <CardActionArea onClick={() => navigate(`/requests/beneficiary/${beneficiaryId}`)}>
                                 <Typography variant="h6" gutterBottom sx={{ color: "#3f51b5" }}>📩 Your Requests</Typography>
                                 {requests.length > 0 ? (
@@ -192,7 +198,7 @@ const BeneficiaryDashboard = () => {
                     </Grid>
                     
                     <Grid item xs={12} md={6}>
-                        <Card sx={{ borderRadius: 2, boxShadow: 3, height: "100%", background: "rgba(255, 255, 255, 0.9)" }}>
+                        <Card sx={{ borderRadius: 2, boxShadow: 3, background: "rgba(255, 255, 255, 0.9)" }}>
                             <CardActionArea onClick={() => navigate(`/beneficiaryHistory/${beneficiaryId}`)} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom sx={{ color: "#3f51b5", display: "flex", alignItems: "center", gap: 1 }}>
                                     <History color="primary" /> 📜 Accepted Devices History
@@ -215,11 +221,12 @@ const BeneficiaryDashboard = () => {
                         </Card>
                     </Grid>
                     
-                    <Grid item xs={12}>
-                        <RequestForm beneficiaryId={beneficiaryId} />
+                    <Grid item xs={12} md={6}>
+                        <RequestForm beneficiaryId={beneficiaryId} onSuccess={handleRequestSuccess}/>
                     </Grid>
 
                 </Grid>
+
             </Container>
         </Box>
     );

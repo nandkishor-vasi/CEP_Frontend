@@ -13,23 +13,28 @@ const Navbar = () => {
   console.log("User in Navbar:", user);
   console.log("isLoggedIn in Navbar:", isLoggedIn);
 
+  const handleContactClick = (e) => {
+    e.preventDefault();
+    const contactSection = document.getElementById("contact-section");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-brand">
         <Link to="/">
           <img src={logo} alt="Reusable Tech Inventory Logo" className="logo" />
-          <span>Reusable Tech Inventory</span>
+          <span>ReTech</span>
         </Link>
       </div>
       <div className="navbar-links">
         <Link to="/" className="nav-link">Home</Link>
-        <Link to="/about" className="nav-link">About Us</Link>
-        <Link to="/contact" className="nav-link">Contact</Link>
+        <a href="#contact" onClick={handleContactClick} className="nav-link">Contact</a>
 
         {isLoggedIn && id && (
-          <Link to="/leaderboard" className="nav-link">
-            Leaderboard
-          </Link>
+          <Link to="/leaderboard" className="nav-link">Leaderboard</Link>
         )}  
 
         {isLoggedIn && id && (

@@ -127,7 +127,7 @@ const DonorDashboard = () => {
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <Card sx={{ borderRadius: 2, boxShadow: 3, height: "100%", background: "rgba(255, 255, 255, 0.9)" }}>
+                        <Card sx={{ borderRadius: 2, boxShadow: 3, background: "rgba(255, 255, 255, 0.9)" }}>
                             <CardActionArea onClick={() => navigate(`/devices/donors/${donorId}`)}>
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom sx={{ color: "#3f51b5" }}>
@@ -211,7 +211,7 @@ const DonorDashboard = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Card sx={{ borderRadius: 2, boxShadow: 3, background: "rgba(255, 255, 255, 0.9)" }}>
+                        <Card sx={{ borderRadius: 2, boxShadow: 3, background: "rgba(255, 255, 255, 0.9)", padding: "12px 42px 18px 42px"    }}>
                             <CardActionArea onClick={() => navigate(`/requests/donors/${donorId}`)}>
                                 <Typography variant="h6" gutterBottom sx={{ color: "#3f51b5" }}>
                                     ✅ Requests You Accepted
@@ -227,7 +227,7 @@ const DonorDashboard = () => {
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {acceptedRequests.map((req) => (
+                                                {acceptedRequests.slice(0,3).map((req) => (
                                                     <TableRow key={req.id}>
                                                         <TableCell>{req.deviceName || "N/A"}</TableCell>
                                                         <TableCell>{new Date(req.acceptedAt).toLocaleDateString()}</TableCell>

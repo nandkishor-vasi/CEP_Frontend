@@ -51,11 +51,14 @@ const Requests = () => {
             await axios.post(`${backendBaseUrl}/api/request/${requestId}/donor/${donorId}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            fetchRequests(); // Refresh data
+
+            fetchRequests();
+
         } catch (error) {
             console.error("Error accepting request:", error.response?.data || error.message);
         }
     };
+
 
     if (loading) return <CircularProgress sx={{ display: "block", margin: "50px auto" }} />;
 
@@ -93,7 +96,14 @@ const Requests = () => {
                                                     color="warning"
                                                 />
                                             </TableCell>
-                                        
+                                            <TableCell>
+                                                {req.status === "Pending" && (
+                                                    <Button variant="contained" color="success" onClick={() => handleAcceptRequest(req.id)}>
+                                                        Accept
+                                                    </Button>
+                                                )}
+                                            </TableCell>
+
                                         </TableRow>
                                     ))}
                                 </TableBody>

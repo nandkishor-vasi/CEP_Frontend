@@ -77,12 +77,12 @@ const Requests = () => {
                                             <TableCell>{req.deviceName || "N/A"}</TableCell>
                                             <TableCell>{req.description}</TableCell>
                                             <TableCell>{new Date(req.acceptedAt).toLocaleDateString()}</TableCell>
-                                            <TableCell>{req.donor.user.name}</TableCell>
+                                            <TableCell>{req.donor?.user?.name || "Unknown"}</TableCell>
                                             <TableCell>
                                                 <Chip
                                                     icon={<CheckCircle />} 
                                                     label={req.status} 
-                                                    color="success"
+                                                    color={req.status === "Accepted" ? "success" : "warning"}
                                                 />
                                             </TableCell>
                                         </TableRow>
